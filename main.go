@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"log"
 	"net/http"
+	"os"
 
 	"./server"
 	"github.com/gorilla/handlers"
@@ -11,6 +12,12 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
 	log.SetFlags(log.Lshortfile)
 
 	cer, err := tls.LoadX509KeyPair("server.crt", "server.key")
@@ -39,6 +46,6 @@ func main() {
 
 	router.HandleFunc("/create", server.CreateRoomRequestHandler)
 	router.HandleFunc("/join", server.JoinRoomRequestHandler)
-	http.ListenAndServeTLS(":8070", "server.crt", "server.key", handlers.CORS(headers, origins, methods)(router))
+	http.ListenAndServeTLS(":"+port, "server.crt", "server.key", handlers.CORS(headers, origins, methods)(router))
 
 }
