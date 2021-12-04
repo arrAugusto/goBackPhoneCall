@@ -46,6 +46,5 @@ func main() {
 
 	router.HandleFunc("/create", server.CreateRoomRequestHandler)
 	router.HandleFunc("/join", server.JoinRoomRequestHandler)
-	http.ListenAndServeTLS(":"+port, "server.crt", "server.key", handlers.CORS(headers, origins, methods)(router))
-
+	http.ListenAndServe(":"+port, handlers.CORS(headers, origins, methods)(router))
 }
